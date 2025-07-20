@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling >= 1.27.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "python-2048"
+description = "A CLI implementation of the 2048 game, written in Python."
+dynamic = ["version"]
+requires-python = ">=3.11"
+readme = "README.md"
+license-files = ["LICENSE"]
+authors = [{ name = "Cliff Lau", email = "cliff@clifflau.hk" }]
+classifiers = ["Private :: Do Not Upload"]
+dependencies = [
+    "loguru>=0.7.3",
+    "pydantic-ai>=0.4.4",
+    "tabulate>=0.9.0",
+    "typer>=0.16.0",
+]
+
+[dependency-groups]
+dev = [
+    "build>=1.2.2.post1",
+    "coverage>=7.9.2",
+    "pre-commit>=4.2.0",
+    "pyright>=1.1.403",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.3",
+]
+
+[project.scripts]
+python-2048 = "python_2048.cli.app:app"
+
+[tool.ruff]
+line-length = 100
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+exclude = ["**/__pycache__", "**/.*"]
+
+[tool.pytest.ini_options]
+xfail_strict = true
+testpaths = ["tests"]
+markers = ["llm_evaluation"]
+addopts = ["--strict-markers", "--cov=src/python_2048"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+omit = ["**/exceptions.py"]
+
+[tool.hatch.version]
+path = "src/python_2048/version.py"
