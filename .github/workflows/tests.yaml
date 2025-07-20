@@ -1,0 +1,61 @@
+name: "Tests"
+
+on:
+  push:
+    branches:
+      - "master"
+  pull_request:
+
+concurrency:
+  group: test-${{ github.head_ref || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  test:
+    name: "Test code"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: "Checkout repository code"
+        uses: actions/checkout@v4
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: "Install dependencies"
+        run: uv sync --locked --all-extras --dev
+      - name: "Test code"
+        run: uv run pytest --cov-fail-under=100
+  llm-evaluations:
+    name: "Run LLM Evaluations"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: "Checkout repository code"
+        uses: actions/checkout@v4
+      - name: "Pull Llama 3.1"
+        uses: pydantic/ollama-action@v3
+        with:
+          model: "llama3.1"
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: "Install dependencies"
+        run: uv sync --locked --all-extras --dev
+      - name: "Run LLM Evaluations"
+        run: uv run pytest --run-llm-evaluations -m llm_evaluation
