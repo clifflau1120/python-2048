@@ -18,11 +18,11 @@ or you can build from source with [uv](https://github.com/astral-sh/uv):
 git clone git@github.com:clifflau1120/python-2048.git
 cd python-2048
 
-uv python install 3.13      # install Python 3.13
-uv python pin 3.13          # pin Python 3.13
-uv venv                     # create a virtual environment
-source .venv/bin/activate   # activate the virtual environment
-uv sync                     # sync dependencies to the virtual environment
+uv python install 3.13               # install Python 3.13
+uv python pin 3.13                   # pin Python 3.13
+uv venv                              # create a virtual environment
+source .venv/bin/activate            # activate the virtual environment
+uv sync --locked --all-extras --dev  # sync dependencies to the virtual environment
 ```
 
 ### Run the game
