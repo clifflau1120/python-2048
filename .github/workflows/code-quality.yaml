@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - "master"
+    paths:
+      - "**.py"
+      - ".editorconfig"
+      - "pyproject.toml"
+      - "uv.lock"
   pull_request:
 
 concurrency:
