@@ -51,7 +51,7 @@ To observe how an LLM plays 2048:
 python-2048 run --impersonate --model <model_name>
 ```
 
-# Contributing
+## Contributing
 
 This repository uses `ruff` for formatting and linting:
 
@@ -72,7 +72,7 @@ pyright
 pytest
 ```
 
-You can install [pre-commit](https://pre-commit.com/) hooks so that code quality is verified on each commit:
+You can install [`pre-commit`](https://pre-commit.com/) hooks so that code quality is verified on each commit:
 
 ```zsh
 pre-commit install
