@@ -5,8 +5,6 @@ import json
 import pydantic_ai
 import pydantic_ai.exceptions
 import pydantic_ai.models
-from pydantic_ai.models import openai as openai_models
-from pydantic_ai.providers import openai as openai_providers
 
 from python_2048.game import types
 from python_2048.players import base, exceptions
@@ -44,23 +42,17 @@ It can be achieved by the following sub-objectives:
 """
 
 
-DEFAULT_OLLAMA_HOST = "http://localhost:11434/v1"
-
-
 class LlmPlayer(base.Player):
     """A Large Language Model that impersonates as a player."""
 
-    def __init__(self, model: str | pydantic_ai.models.Model):
+    def __init__(self, model: pydantic_ai.models.Model):
         try:
-            if isinstance(model, str) and model.startswith("ollama:"):
-                model = self._construct_ollama_model(model)
-
             self._agent = pydantic_ai.Agent(
                 model,
                 system_prompt=_SYSTEM_PROMPT,
                 output_type=types.PlayerDecision,
             )
-        except pydantic_ai.exceptions.UserError as cause:
+        except pydantic_ai.exceptions.UserError as cause:  # pragma: no cover
             raise exceptions.LlmException(model) from cause
 
     def get_next_move(self, board: types.GameBoard) -> types.PlayerDecision:
@@ -72,14 +64,3 @@ class LlmPlayer(base.Player):
             raise exceptions.LlmException(self._agent.model) from cause
 
         return result.output
-
-    @staticmethod
-    def _construct_ollama_model(model_name: str) -> pydantic_ai.models.Model:
-        """Construct an Ollama Model."""
-
-        model_name = model_name.removeprefix("ollama:")
-
-        return openai_models.OpenAIModel(
-            model_name,
-            provider=openai_providers.OpenAIProvider(base_url=DEFAULT_OLLAMA_HOST),
-        )
