@@ -61,6 +61,6 @@ class LlmPlayer(base.Player):
         try:
             result = self._agent.run_sync(user_prompt)
         except pydantic_ai.exceptions.UnexpectedModelBehavior as cause:
-            raise exceptions.LlmException(self._agent.model) from cause
+            raise exceptions.InvalidStructuredResponse(self._agent.model) from cause  # type: ignore
 
         return result.output
